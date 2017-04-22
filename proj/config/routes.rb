@@ -2,7 +2,7 @@ Rails.application.routes.draw do
   match ':controller(/:action(/:id))(.:format)',:via => [:get]
   root :to => "sessions#login"
   match "signup", :to => "users#new",:via => [:get]
-  match "save_file", :to => "users#save_file",:via => [:post]
+  match "users/save_file", :to => "users#save_file",:via => [:post]
   match "register", :to => "users#new",:via => [:get]
   match "new", :to => "users#new",:via => [:get]
   match "users/create", :to => "users#create",:via => [:post]
