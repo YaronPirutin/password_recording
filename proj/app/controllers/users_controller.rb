@@ -10,11 +10,13 @@ class UsersController < ApplicationController
       flash[:color]= "valid"
       session[:user_id] = @user.id
       redirect_to(:controller => 'sessions', :action => 'profile')
+      return
     else
       flash[:notice] = "Form is invalid"
       flash[:color]= "invalid"
     end
-    render "new"
+      render "new"
+      return
   end
   private
   def user_params

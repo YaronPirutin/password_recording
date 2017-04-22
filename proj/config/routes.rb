@@ -3,7 +3,7 @@ Rails.application.routes.draw do
   root :to => "sessions#login"
   match "signup", :to => "users#new",:via => [:get]
   match "users/create", :to => "users#create",:via => [:post]
-  match "sessions/login_attempt", :to => "sessions#login_attempt",:via => [:post] 
+  match "sessions/login_attempt", :to => "sessions#login_attempt",:via => [:post]
   match "login", :to => "sessions#login",:via => [:get]
   match "logout", :to => "sessions#logout",:via => [:get]
   match "home", :to => "sessions#home",:via => [:get]
