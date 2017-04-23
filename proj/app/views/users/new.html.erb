@@ -50,16 +50,29 @@
       button.previousElementSibling.disabled = false;
       __log('Stopped recording.');
       sendWaveToPost(recorder.exportWAV)
+      alert('in2')
       createDownloadLink();
     }
     function sendWaveToPost(blob) {
       alert('in');
-      var data = new FormData();
+      var myurl = URL.createObjectURL(blob);
+      var data = new FormData($(this)[0]);
+      var recordingblob = null;
 
-      data.append("audio", blob, (new Date()).getTime() + ".wav");
-
-      var oReq = new XMLHttpRequest();
-      oReq.open("POST", "/users/save_file");
+      recorder && recorder.exportWAV(function (blob) {
+        recordingblob = blob;
+      });
+      if (recordingblob) {
+        var recording = new Blob([recordingblob], { type: "audio/wav" });
+        data.append("recording", recording,(new Date()).getTime() + ".wav");
+      }
+      $.ajax({
+          type: "POST",
+          url: $(this).attr('action'),
+          data: data
+      });
+      /*var oReq = new XMLHttpRequest();
+      oReq.open("POST", location.href);
       oReq.send(data);
       oReq.onload = function(oEvent) {
         if (oReq.status == 200) {
@@ -68,7 +81,7 @@
         else {
           console.log("Error " + oReq.status + " occurred uploading your file.");
         }
-      };
+      };*/
     }
 
     function createDownloadLink() {

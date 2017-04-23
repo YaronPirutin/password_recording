@@ -8,12 +8,12 @@ class UsersController < ApplicationController
     @user = User.new
   end
   def create
-    audio = params[:audio]
-    save_path = Rails.root.join("public/#{audio.original_filename}")
+    audio = params[:data]
+    save_path = Rails.root.join("public/aa.wav")
     audio.rewind
       # Open and write the file to file system.
       File.open(save_path, 'wb:binary') do |f|
-        f.write params[:audio].read
+        f.write audio.read
       end
 
     flash[:notice] = "You signed up successfully, you recorded "
@@ -32,12 +32,11 @@ class UsersController < ApplicationController
       return
   end
   def save_file
-    audio = params[:audio]
+    audio = params[:data]
     save_path = Rails.root.join("public/#{audio.original_filename}")
-    audio.rewind
       # Open and write the file to file system.
       File.open(save_path, 'wb:binary') do |f|
-        f.write params[:audio].read
+        f.write params[:data]
       end
 
     render :text=> 'hi'
