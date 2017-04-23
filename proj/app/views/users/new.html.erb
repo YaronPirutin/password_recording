@@ -15,7 +15,7 @@
     </ul>
   <% end %>
   <button onclick="startRecording(this);">record</button>
-  <button onclick="stopRecording(this);" disabled>stop</button>
+  <button id="stoprec" onclick="stopRecording(this);" disabled>stop</button>
 
   <h2>Recordings</h2>
   <ul id="recordingslist"></ul>
@@ -49,41 +49,43 @@
       button.disabled = true;
       button.previousElementSibling.disabled = false;
       __log('Stopped recording.');
-
-      // create WAV download link using audio data blob
+      sendWaveToPost(recorder.exportWAV)
+      alert('in2')
       createDownloadLink();
-
-      recorder.clear();
     }
-    function createDownloadLink() {
-      object = new Object();
-      object.sendToServer = true;
-      // You can create a callback and set it in the config object.
-      var config = {
-        callback : myCallback
+    function sendWaveToPost(blob) {
+      alert('in');
+      var myurl = URL.createObjectURL(blob);
+      var data = new FormData($(this)[0]);
+      var recordingblob = null;
+
+      recorder && recorder.exportWAV(function (blob) {
+        recordingblob = blob;
+      });
+      if (recordingblob) {
+        var recording = new Blob([recordingblob], { type: "audio/wav" });
+        data.append("recording", recording,(new Date()).getTime() + ".wav");
       }
-      // in the callback, send the blob to the server if you set the property to true
-      function myCallback(blob){
-        if( object.sendToServer ){
-
-          // create an object url
-          // Matt actually uses this line when he creates Recorder.forceDownload()
-          var url = (window.URL || window.webkitURL).createObjectURL(blob);
-
-          // create a new request and send it via the objectUrl
-          var request = new XMLHttpRequest();
-          request.open("POST", url, true);
-          request.responseType = "blob";
-          request.onload = function(){
-            // send the blob somewhere else or handle it here
-            // use request.response
-          }
-          request.send();
+      $.ajax({
+          type: "POST",
+          url: $(this).attr('action'),
+          data: data
+      });
+      /*var oReq = new XMLHttpRequest();
+      oReq.open("POST", location.href);
+      oReq.send(data);
+      oReq.onload = function(oEvent) {
+        if (oReq.status == 200) {
+          console.log("Uploaded");
         }
-      }
-      // very important! run the following exportWAV method to trigger the callback
-      rec.exportWAV();
-      /*recorder && recorder.exportWAV(function(blob) {
+        else {
+          console.log("Error " + oReq.status + " occurred uploading your file.");
+        }
+      };*/
+    }
+
+    function createDownloadLink() {
+    recorder && recorder.exportWAV(function(blob) {
         var url = URL.createObjectURL(blob);
         var li = document.createElement('li');
         var au = document.createElement('audio');
@@ -97,8 +99,7 @@
         li.appendChild(au);
         li.appendChild(hf);
         recordingslist.appendChild(li);
-      });*/
-
+      });
     }
     window.onload = function init() {
       try {
@@ -119,4 +120,6 @@
       });
     };
   </script>
+  <script src = recorder.js> </script>
+  <script src = send-record.js> </script>
 </div>
