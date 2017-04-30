@@ -4,9 +4,7 @@ class User < ActiveRecord::Base
   before_save :encrypt_password
   after_save :clear_password
 
-  validates :username, :presence => true, :uniqueness => true, :length => { :in => 3..20 }
-  validates :password, :confirmation => true #password_confirmation attr
-  validates_length_of :password, :in => 6..20, :on => :create
+  validates :username, :presence => true, :length => { :in => 3..20 }
 
   def self.authenticate(username="", login_password="")
     user = User.find_by_username(username)
