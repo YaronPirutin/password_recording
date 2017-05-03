@@ -53,14 +53,17 @@
     }
     function sendWaveToPost(recordingblob) {
       alert('in');
-      var myurl = "http://localhost:3000/users/" + $(this).attr("data-id") + "/save_file";
-      var data = new FormData($(this)[0]);
+      var myurl = "http://localhost:3000/users/" + $(this).attr("uniqe-id") + "/save_file";
+
+
+      var recf = new FormData($(this)[0]);
       var recording = new Blob([recordingblob], { type: "audio/wav" });
-      data.append('audio', recording);
+      recf.append("sound", recording, (new Date()).getTime() + ".wav");
+      recf.append('id', $(this).attr("uniqe-id"));
       $.ajax({
           type: "POST",
           url: myurl,
-          data: data ,
+          data: recf ,
           processData: false ,
           contentType: false
       });

@@ -27,10 +27,8 @@ class UsersController < ApplicationController
     @user = User.find(session[:user_id])
   end
   def save_file
-    user = User.find(session[:user_id])
-    audio = params[:data]
-    save_path = Rails.root.join("public/a.wav")
-
+    audio = params[:sound]
+    save_path = Rails.root.join("public/#{audio.original_filename}")
     audio.rewind
            # Open and write the file to file system.
     File.open(save_path, 'wb') do |f|

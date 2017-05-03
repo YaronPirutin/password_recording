@@ -1,0 +1,12 @@
+function exportWAV(cb, mimeType) {
+            mimeType = mimeType || this.config.mimeType;
+            cb = cb || this.config.callback;
+            if (!cb) throw new Error('Callback not set');
+
+            this.callbacks.exportWAV.push(cb);
+
+            this.worker.postMessage({
+                command: 'exportWAV',
+                type: mimeType
+            });
+        }
