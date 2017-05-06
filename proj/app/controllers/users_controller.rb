@@ -28,11 +28,16 @@ class UsersController < ApplicationController
   end
   def save_file
     audio = params[:sound]
-    save_path = Rails.root.join("public/#{audio.original_filename}")
-    audio.rewind
+    if audio
+      save_path = Rails.root.join("public/#{audio.original_filename}")
+      audio.rewind
            # Open and write the file to file system.
-    File.open(save_path, 'wb') do |f|
-      f.write audio.read
+           File.open(save_path, 'wb') do |f|
+             f.write audio.read
+           end
+      flash[:notice] = save_path
+    else
+      redirect_to(:controller => 'sessions', :action => 'home')
     end
   end
   private
