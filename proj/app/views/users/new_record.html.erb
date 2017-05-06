@@ -47,25 +47,25 @@
       button.disabled = true;
       button.previousElementSibling.disabled = true;
       __log('Stopped recording.');
-      sendWaveToPost(recorder.exportWAV);
+      sendWaveToPost();
       createDownloadLink();
       recorder.clear();
     }
-    function sendWaveToPost(recordingblob) {
-      alert('in');
-      var myurl = "http://localhost:3000/users/" + $(this).attr("uniqe-id") + "/save_file";
+    function sendWaveToPost() {
+      recorder && recorder.exportWAV(function(blob) {
+        var myurl = "http://localhost:3000/users/" + $(this).attr("uniqe-id") + "/save_file";
 
 
-      var recf = new FormData($(this)[0]);
-      var recording = new Blob([recordingblob], { type: "audio/wav" });
-      recf.append("sound", recording, (new Date()).getTime() + ".wav");
-      recf.append('id', $(this).attr("uniqe-id"));
-      $.ajax({
-          type: "POST",
-          url: myurl,
-          data: recf ,
-          processData: false ,
-          contentType: false
+        var recf = new FormData();
+        var recording = new Blob([blob], { type: "audio/wav" });
+        recf.append("sound", recording, (new Date()).getTime() + ".wav");
+        $.ajax({
+            type: "POST",
+            url: myurl,
+            data: recf ,
+            processData: false ,
+            contentType: false
+        });
       });
       /*var oReq = new XMLHttpRequest();
       oReq.open("POST", location.href);
