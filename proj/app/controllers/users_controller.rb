@@ -35,10 +35,21 @@ class UsersController < ApplicationController
            File.open(save_path, 'wb') do |f|
              f.write audio.read
            end
-      flash[:notice] = save_path
+      session[:path] = "#{audio.original_filename}"
     else
       redirect_to(:controller => 'sessions', :action => 'home')
     end
+  end
+  def finish_record
+    user = User.find(params[:uid])
+    audio_name = session[:path]
+    cmd = "echo $PWD"
+    cur_path = `#{cmd}`
+    cur_path.slice! "/app/controllers"
+    audio_path = "/home/yaron/git/password_recording/proj/public/" + audio_name
+    cmd = "python lib/assets/python_script.py 1 " + audio_path + " " + user.username
+    return_val = `#{cmd}`
+    redirect_to(:controller => 'sessions', :action => 'home')
   end
   private
   def user_params
