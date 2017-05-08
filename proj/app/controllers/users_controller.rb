@@ -3,6 +3,7 @@ class UsersController < ApplicationController
   require "pocketsphinx-ruby"
   require 'base64'
   require 'pry'
+  require 'google/cloud/speech'
   include Pocketsphinx
   before_action :save_login_state, :only => [:new, :create]
   def new
@@ -35,7 +36,20 @@ class UsersController < ApplicationController
            File.open(save_path, 'wb') do |f|
              f.write audio.read
            end
-      session[:path] = "#{audio.original_filename}"
+    session[:path] = "#{audio.original_filename}"
+    speech = Google::Cloud::Speech.new
+    voice = speech.voice save_path,
+                        encoding: :linear16,
+                        language: "en-US",
+                        sample_rate: 16000
+
+    results = voice.recognize
+    result = results.first
+    File.open("textfromspeech", 'wb') do |f|
+      f.write result.transcript
+    end
+
+      flash[:notice] = save_path
     else
       redirect_to(:controller => 'sessions', :action => 'home')
     end

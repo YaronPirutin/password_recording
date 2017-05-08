@@ -23,6 +23,7 @@ gem 'coffee-rails', '~> 4.2'
 #speech recofnition gem
 gem 'pocketsphinx-ruby'
 
+gem 'google-cloud-speech'
 # Use jquery as the JavaScript library
 gem 'jquery-rails'
 # Turbolinks makes navigating your web application faster. Read more: https://github.com/turbolinks/turbolinks
