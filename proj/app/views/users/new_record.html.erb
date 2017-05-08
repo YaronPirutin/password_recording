@@ -1,13 +1,13 @@
 <h2 class='User_Header'><%=@user.username%> RecordingsForUser <h2>
   <h1>Sign Up</h1>
   <div id="uniqe-id" data-id="<%= @user.id %>" ></div>
-  <%= form_for(:user, :url => {:controller => 'users', :action => 'save_file'}) do |f| %>
+  <%= form_for(:user, :url => {:controller => 'users', :action => 'finish_record'}) do |f| %>
     <button onclick="startRecording(this);">record</button>
     <button id="stoprec" onclick="stopRecording(this);" disabled>stop</button>
-
+    <%= hidden_field_tag(:uid, @user.id) %>
     <h2>Recordings</h2>
     <ul id="recordingslist"></ul>
-    <%= f.submit :Signup %>
+    <%= f.submit :Signup%>
   <% end %>
   <% if @user.errors.any? %>
     <ul class="Signup_Errors">
