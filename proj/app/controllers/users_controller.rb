@@ -30,24 +30,20 @@ class UsersController < ApplicationController
   def save_file
     audio = params[:sound]
     if audio
-      save_path = Rails.root.join("public/#{audio.original_filename}")
-      audio.rewind
+          save_path = Rails.root.join("public/#{audio.original_filename}")
+          audio.rewind
            # Open and write the file to file system.
            File.open(save_path, 'wb') do |f|
              f.write audio.read
            end
-    session[:path] = "#{audio.original_filename}"
-    #speech = Google::Cloud::Speech.new
-    #voice = speech.voice save_path,
-    #                    encoding: :linear16,
-    #                    language: "en-US",
-    #                    sample_rate: 16000
-
-    #results = voice.recognize
-    #result = results.first
-    #File.open("textfromspeech", 'wb') do |f|
-    #  f.write result.transcript
-    #end
+           session[:path] = "#{audio.original_filename}"
+           cmd = "sox /home/yaron/git/password_recording/proj/public/" +  "#{audio.original_filename}" + " --bits 16 --encoding signed-integer --endian little temp.raw"
+           run = `#{cmd}`
+           decoder = Pocketsphinx::Decoder.new(Pocketsphinx::Configuration.default)
+           decoder.decode '/home/yaron/git/password_recording/proj/public/' + "#{audio.original_filename}"
+           open('myfile.txt', 'w') do |f|
+             f.puts decoder.hypothesis
+           end
 
       flash[:notice] = save_path
     else
