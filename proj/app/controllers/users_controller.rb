@@ -37,20 +37,12 @@ class UsersController < ApplicationController
              f.write audio.read
            end
            session[:path] = "#{audio.original_filename}"
-           decoder = Pocketsphinx::Decoder.new(Pocketsphinx::Configuration.default)
-           decoder.decode '/home/yaron/git/password_recording/proj/public/' + "#{audio.original_filename}"
-           open('myfile.txt', 'w') do |f|
-             f.puts decoder.hypothesis
-           end
-          session[:msg] = decoder.hypothesis
     else
       redirect_to(:controller => 'sessions', :action => 'home')
     end
   end
   def finish_record
     user = User.find(params[:uid])
-    user.password = session[:msg]
-    user.save
     audio_name = session[:path]
     cmd = "echo $PWD"
     cur_path = `#{cmd}`
@@ -59,7 +51,12 @@ class UsersController < ApplicationController
     cmd = "sox " + audio_path + " -c 1 temp.wav"
     cur_path = `#{cmd}`
     cmd = "python lib/assets/python_script.py 1 " + "/home/yaron/git/password_recording/proj/temp.wav" + " " + user.username
+    return_val = `#{cmd}`
+    File.open("sas.txt", 'w') do |f|
+      f.write return_val
+    end
 
+    cmd = "rm home/yaron/git/password_recording/proj/temp.wav"
     return_val = `#{cmd}`
     redirect_to(:controller => 'sessions', :action => 'home')
   end

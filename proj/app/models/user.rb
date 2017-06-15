@@ -6,14 +6,6 @@ class User < ActiveRecord::Base
 
   validates :username, :presence => true, :length => { :in => 3..20 }
 
-  def self.authenticate(username="", login_password="")
-    user = User.find_by_username(username)
-    if user && user.match_password(login_password)
-      return user
-    else
-      return false
-    end
-  end
 
   def match_password(login_password="")
     encrypted_password == BCrypt::Engine.hash_secret(login_password, salt)

@@ -1,0 +1,6 @@
+Label yaron has files ./people/yaron/yar.wav,./people/yaron/1.wav,./people/yaron/2.wav
+Label yaron2 has files ./people/yaron2/temp.wav
+Label roei has files ./people/roei/1.wav,./people/roei/2.wav
+Start training...
+1.25301194191  seconds
+python2 speaker-recognition.py -t enroll -i "./people/yaron ./people/yaron2 ./people/roei " -m model.out
